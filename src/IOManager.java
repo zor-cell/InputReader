@@ -1,10 +1,7 @@
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Objects;
 import java.util.Scanner;
+import java.io.FileWriter;
+import java.util.Arrays;
 
 public class IOManager {
     private File[] inputFiles;
@@ -52,7 +49,13 @@ public class IOManager {
         debug("outputFiles (" + this.outputFiles.length + "): " + Arrays.deepToString(this.outputFiles));
     }
 
-    public String[][] readInputs() {
+    public void execute() {
+        String[][] inputs = this.readInputs();
+        this.writeOutputs(inputs);
+    }
+
+    private String[][] readInputs() {
+        //input lines from every inputFile
         String[][] inputs = new String[this.inputFiles.length][];
 
         for(int i = 0;i < inputs.length;i++) {
@@ -67,36 +70,22 @@ public class IOManager {
                 continue;
             }
 
-            inputs[i] = getLines(reader);
+            try {
+                inputs[i] = Main.getLines(reader);
+            } catch(Exception e) {
+                inputs[i] = new String[]{};
+                reader.close();
+            }
+            reader.close();
         }
 
         debug("inputs (" + inputs.length + "): " + Arrays.deepToString(inputs));
         return inputs;
     }
 
-
-    //function for reading the lines with a given Scanner
-    //update this function according to the input requirements
-    private String[] getLines(Scanner reader) {
-        int n = 0;
-
-        //first line
-        if(reader.hasNextInt()) {
-            n = reader.nextInt();
-            reader.nextLine();
-        }
-
-        String[] input = new String[n];
-        for(int i = 0;i < n;i++) {
-            input[i] = reader.nextLine();
-        }
-
-        return input;
-    }
-
     //writes the result of the Main.solve function
     //to an output file for each input file
-    public void writeOutputs(String[][] inputs) {
+    private void writeOutputs(String[][] inputs) {
         for(int i = 0;i < inputs.length;i++) {
             //Create file writer for every outputFile
             FileWriter writer;
@@ -107,7 +96,7 @@ public class IOManager {
                 continue;
             }
 
-            //write result of solve function to current outputFile
+            //write result of solve function to current outputFile for each test case
             for(String s : inputs[i]) {
                 String result = Main.solve(s).toString();
 
