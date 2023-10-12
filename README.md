@@ -10,11 +10,11 @@ Made by **Philippe Zorman**
 ### Usage
 **IOManager.java:** This class takes over the required logic and error handling for inputs and outpus, it should not be changed.  
 **Main.java:** This class serves as the interface for the user to implement their code. The code of all methods can be changed, unless comments say otherwise.  
-**String[] Main.getLines():** This function is responsible for parsing each case of a file of test cases. As the input format varies for every assignment, the use can implement 
+**String[] Main.getLines():** This function is responsible for parsing each case of a file of test cases. As the input format varies for every assignment, the user can implement 
 the required format.  
-**T Main.solve():** This is the function where the code for the required algorithm belongs. The return type **T** is converted with **.toString()** for the output file. The input is 
+**T Main.solve():** This is the function where the code for the required algorithm belongs. The return type **T** is converted with **.toString()** for the output file. The given parameter is 
 one test case line, note that the line may need to be seperated into different inputs.  
-Input test cases can look like the following:
+Input test cases passed as a parameter can look like the following:
 ```
 aaabaa
 23 3 abc
