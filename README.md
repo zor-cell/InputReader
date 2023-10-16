@@ -12,6 +12,8 @@ IOManager.java takes over the required logic and error handling, it should not b
 The code of all methods in Main.java can and should be changed, unless comments say otherwise.
 
 ### TODO
+- [ ] Support for 2d array inputs
+- [ ] Support for CCC level detection
 - [ ] Support for recursive folder search (just one level at the moment)  
 - [ ] Support for specification of file types or names to be used or ignored as input  
 - [ ] A Debugger to prettify debug output and show more information with specific data types  

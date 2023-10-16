@@ -1,10 +1,11 @@
-import java.util.InputMismatchException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
     //settings
-    private final static String inputPath = "src/input/level3_1.in";
-    private final static String outputPath = "src/output";
+    private final static String inputPath = "src/example/";
+    private final static String outputPath = "src/output/";
     private final static boolean isDebug = false;
 
     //DO NOT CHANGE METHOD
@@ -13,36 +14,23 @@ public class Main {
         ioManager.execute();
     }
 
-    //method for algorithm to be applied to test case
-    //return type can be changed (all types get converted with toString())
-    //DO NOT CHANGE PARAMETERS
-    public static String solve(String line) {
-        Scanner sc = new Scanner(line);
+    //method for reading input from input file and writing solution to output file
+    //gets applied to all given input files
+    //example of a program to output line length of each line
+    //DO NOT CHANGE PARAMETERS OR RETURN TYPE
+    public static void solve(Scanner reader, FileWriter writer) throws IOException {
+        //read lines from input
+        //and write to file using: writer.write(result + "\n");
+        int n = reader.nextInt();
+        reader.nextLine(); //skip linebreak
 
-        for(int i = 0;i < 3;i++) {
-            String s = sc.next();
-        }
-
-        return "0";
-    }
-
-    //function for reading the lines with a given Scanner
-    //update this function according to the input requirements
-    //DO NOT CHANGE METHOD PARAMETERS AND RETURN TYPE
-    public static String[] getLines(Scanner scanner) throws InputMismatchException {
-        int n = 0, m = 0;
-
-        //first line
-        n = scanner.nextInt();
-        m = scanner.nextInt();
-        scanner.nextLine(); //call required to jump to next line
-
-        //lines after first
-        String[] input = new String[n];
+        int result = 0;
         for(int i = 0;i < n;i++) {
-            input[i] = scanner.nextLine();
-        }
+            String line = reader.nextLine();
+            result = line.length();
 
-        return input;
+            //write result to file
+            writer.write(result + "\n");
+        }
     }
 }

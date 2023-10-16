@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.IOException;
 import java.util.Scanner;
 import java.io.FileWriter;
 import java.util.Arrays;
@@ -7,6 +8,7 @@ public class IOManager {
     private File[] inputFiles;
     private File[] outputFiles;
     private boolean isDebug;
+
 
     //private boolean showLineIndex = false;
     public IOManager(String inputPath, String outputPath, boolean isDebug) {
@@ -32,7 +34,8 @@ public class IOManager {
             this.inputFiles = new File[] {file};
         }
 
-        debug("inputFiles (" + this.inputFiles.length + "): " + Arrays.deepToString(this.inputFiles));
+        this.debug("Reading files from " + inputPath + "!");
+        this.debug("inputFiles (" + this.inputFiles.length + "): " + Arrays.deepToString(this.inputFiles));
     }
 
     private void initOutputFiles(String outputPath) {
@@ -46,74 +49,45 @@ public class IOManager {
             this.outputFiles[i] = new File(filePath + fileName);
         }
 
-        debug("outputFiles (" + this.outputFiles.length + "): " + Arrays.deepToString(this.outputFiles));
+        this.debug("Writing files to " + outputPath + "!");
+        this.debug("outputFiles (" + this.outputFiles.length + "): " + Arrays.deepToString(this.outputFiles));
     }
 
     public void execute() {
-        String[][] inputs = this.readInputs();
-        this.writeOutputs(inputs);
-    }
+        //execute Main.solve() for every input file
+        for(int i = 0;i < this.inputFiles.length;i++) {
+            File inputFile = this.inputFiles[i];
+            File outputFile = this.outputFiles[i];
 
-    private String[][] readInputs() {
-        //input lines from every inputFile
-        String[][] inputs = new String[this.inputFiles.length][];
-
-        for(int i = 0;i < inputs.length;i++) {
-            File file = this.inputFiles[i];
-
-            //Create Scanner to read from every input file
+            //Create Scanner for reading from file and writer for writing to file
             Scanner reader;
-            try {
-                reader = new Scanner(file);
-            } catch(Exception e) {
-                e.printStackTrace();
-                continue;
-            }
-
-            try {
-                inputs[i] = Main.getLines(reader);
-            } catch(Exception e) {
-                inputs[i] = new String[]{};
-                reader.close();
-            }
-            reader.close();
-        }
-
-        debug("inputs (" + inputs.length + "): " + Arrays.deepToString(inputs));
-        return inputs;
-    }
-
-    //writes the result of the Main.solve function
-    //to an output file for each input file
-    private void writeOutputs(String[][] inputs) {
-        for(int i = 0;i < inputs.length;i++) {
-            //Create file writer for every outputFile
             FileWriter writer;
             try {
-                writer = new FileWriter(this.outputFiles[i]);
+                reader = new Scanner(inputFile);
+                writer = new FileWriter(outputFile);
             } catch(Exception e) {
                 e.printStackTrace();
                 continue;
             }
 
-            //write result of solve function to current outputFile for each test case
-            for(String s : inputs[i]) {
-                String result = Main.solve(s).toString();
-
-                try {
-                    writer.write(result + "\n");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    continue;
-                }
+            //write to file in solve method
+            try {
+                Main.solve(reader, writer);
+            } catch (IOException e) {
+                e.printStackTrace();
+                continue;
             }
 
-            //finally close file writer
+            //close used resources
+            reader.close();
             try {
                 writer.close();
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+            this.debug("File " + (i + 1) + " done!");
         }
+        this.debug("All Files done!");
     }
 }
