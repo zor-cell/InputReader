@@ -9,7 +9,7 @@ Made by **Philippe Zorman**
 
 ### Usage
 **IOManager.java:** This class takes over the required logic and error handling for inputs and outpus, it should not be changed.  
-**Main.java:** This class serves as the interface for the user to implement their code. The code of all methods can be changed, unless comments say otherwise.
+**Main.java:** This class serves as the interface for the user to implement their code. The code of all methods can be changed, unless comments say otherwise.  
 **void Main.solve():** This is the function where the code for the required algorithm belongs.
 ```
 aaabaa
@@ -18,7 +18,7 @@ aaabaa
 ```
 
 ### TODO
-- [ ] Support for 2d array inputs
+- [ x ] Support for 2d array inputs
 - [ ] Support for CCC level detection
 - [ ] Support for recursive folder search (just one level at the moment)  
 - [ ] Support for specification of file types or names to be used or ignored as input  
