@@ -8,14 +8,11 @@ public class IOManager {
     private File[] inputFiles;
     private File[] outputFiles;
     private boolean isDebug;
-
-
-    //private boolean showLineIndex = false;
     public IOManager(String inputPath, String outputPath, boolean isDebug) {
         this.isDebug = isDebug;
 
-        initInputFiles(inputPath);
-        initOutputFiles(outputPath);
+        this.initInputFiles(inputPath);
+        this.initOutputFiles(outputPath);
     }
 
     private void debug(String message) {
