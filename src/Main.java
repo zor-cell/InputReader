@@ -4,8 +4,8 @@ import java.util.Scanner;
 
 public class Main {
     //settings
-    private final static String inputPath = "src/example/";
-    private final static String outputPath = "src/output/";
+    private final static String inputPath = "InputReader-master/src/example/";
+    private final static String outputPath = "InputReader-master/src/output/";
     private final static boolean isDebug = false;
 
     //DO NOT CHANGE METHOD
