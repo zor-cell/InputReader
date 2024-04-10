@@ -1,0 +1,5 @@
+<configuration>
+    <inputPath>./example/</inputPath>
+    <outputPath>./output/</outputPath>
+    <isDebug>false</isDebug>
+</configuration>

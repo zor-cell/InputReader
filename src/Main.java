@@ -3,14 +3,11 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
-    //settings
-    private final static String inputPath = "src/example/";
-    private final static String outputPath = "src/output/";
-    private final static boolean isDebug = false;
-
     //DO NOT CHANGE METHOD
     public static void main(String[] args) {
-        IOManager ioManager = new IOManager(inputPath, outputPath, isDebug);
+        Config config = ConfigLoader.loadConfig("config.xml");
+
+        IOManager ioManager = new IOManager(config.getInputPath(), config.getOutputPath(), config.isDebug());
         ioManager.execute();
     }
 
