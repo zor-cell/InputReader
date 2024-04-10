@@ -1,17 +1,40 @@
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.io.FileWriter;
 import java.util.Arrays;
 
 public class IOManager {
-    private File[] inputFiles;
-    private File[] outputFiles;
+    private List<File> inputFiles;
+    private List<File> outputFiles;
+    private List<String> allowedExtensions;
     private boolean isDebug;
+
+
     public IOManager(String inputPath, String outputPath, boolean isDebug) {
         this.isDebug = isDebug;
 
+        inputFiles = new ArrayList<>();
+        this.debug("Reading files from " + inputPath + "!");
         this.initInputFiles(inputPath);
+        this.debug("inputFiles (" + inputFiles.size() + "): " + inputFiles);
+
+        outputFiles = new ArrayList<>();
+        this.initOutputFiles(outputPath);
+    }
+
+    public IOManager(String inputPath, String outputPath, boolean isDebug, List<String> allowedExtensions) {
+        this.isDebug = isDebug;
+        this.allowedExtensions = allowedExtensions;
+
+        inputFiles = new ArrayList<>();
+        this.debug("Reading files from " + inputPath + "!");
+        this.initInputFiles(inputPath);
+        this.debug("inputFiles (" + inputFiles.size() + "): " + inputFiles);
+
+        outputFiles = new ArrayList<>();
         this.initOutputFiles(outputPath);
     }
 
@@ -25,36 +48,49 @@ public class IOManager {
         //file reader for input
         File file = new File(inputPath);
 
-        if(file.isDirectory()) {
-            this.inputFiles = file.listFiles();
-        } else {
-            this.inputFiles = new File[] {file};
+        // normal file
+        if (file.isFile()) {
+            String fileName = file.getName();
+            int lastDotIndex = fileName.lastIndexOf('.');
+
+            if (lastDotIndex > 0) {
+                String extension = fileName.substring(lastDotIndex).toLowerCase();
+                if (allowedExtensions.contains(extension)) {
+                    inputFiles.add(file);
+                }
+            }
+            return;
         }
 
-        this.debug("Reading files from " + inputPath + "!");
-        this.debug("inputFiles (" + this.inputFiles.length + "): " + Arrays.deepToString(this.inputFiles));
+        // directory
+        File[] filesArray = file.listFiles();
+        if (filesArray != null) {
+            for (File fileInDirectory : filesArray) {
+                initInputFiles(fileInDirectory.getPath());
+            }
+        }
     }
 
     private void initOutputFiles(String outputPath) {
         //create an output file for every input file
-        this.outputFiles = new File[this.inputFiles.length];
 
-        for(int i = 0;i < this.outputFiles.length;i++) {
+        for (File inputFile : this.inputFiles) {
             String filePath = outputPath + "/";
-            String fileName =  this.inputFiles[i].getName().split("\\.")[0] + ".txt";
+            String fileName = inputFile.getName().split("\\.")[0] + ".txt";
 
-            this.outputFiles[i] = new File(filePath + fileName);
+            this.outputFiles.add(new File(filePath + fileName));
         }
 
         this.debug("Writing files to " + outputPath + "!");
-        this.debug("outputFiles (" + this.outputFiles.length + "): " + Arrays.deepToString(this.outputFiles));
+        this.debug("outputFiles (" + this.outputFiles.size() + "): " + outputFiles);
     }
 
     public void execute() {
         //execute Main.solve() for every input file
-        for(int i = 0;i < this.inputFiles.length;i++) {
-            File inputFile = this.inputFiles[i];
-            File outputFile = this.outputFiles[i];
+        for(int i = 0; i < inputFiles.size(); i++) {
+            File inputFile = this.inputFiles.get(i);
+            File outputFile = this.outputFiles.get(i);
+            this.debug("File " + inputFile.getName() + " in progress!");
 
             //Create Scanner for reading from file and writer for writing to file
             Scanner reader;
@@ -82,8 +118,6 @@ public class IOManager {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            this.debug("File " + (i + 1) + " done!");
         }
         this.debug("All Files done!");
     }

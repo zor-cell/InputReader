@@ -1,5 +1,9 @@
 <configuration>
     <inputPath>./example/</inputPath>
     <outputPath>./output/</outputPath>
-    <isDebug>false</isDebug>
+    <isDebug>true</isDebug>
+    <allowedExtensions>
+        <extension>.in</extension>
+        <extension>.txt</extension>
+    </allowedExtensions>
 </configuration>
