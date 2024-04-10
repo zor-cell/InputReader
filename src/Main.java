@@ -7,7 +7,12 @@ public class Main {
     public static void main(String[] args) {
         Config config = ConfigLoader.loadConfig("config.xml");
 
-        IOManager ioManager = new IOManager(config.getInputPath(), config.getOutputPath(), config.isDebug(), config.getAllowedExtensions());
+        IOManager ioManager = new IOManager(config.getInputPath(), config.getOutputPath());
+        ioManager.setDebug(config.isDebug());
+        ioManager.setAllowedExtensions(config.getAllowedExtensions());
+        ioManager.setTargetSpecificLevel(config.getTargetSpecificLevel());
+
+        ioManager.initilize();
         ioManager.execute();
     }
 

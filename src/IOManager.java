@@ -11,31 +11,13 @@ public class IOManager {
     private List<File> outputFiles;
     private List<String> allowedExtensions;
     private boolean isDebug;
+    private int targetSpecificLevel;
+    private String inputPath;
+    private String outputPath;
 
-
-    public IOManager(String inputPath, String outputPath, boolean isDebug) {
-        this.isDebug = isDebug;
-
-        inputFiles = new ArrayList<>();
-        this.debug("Reading files from " + inputPath + "!");
-        this.initInputFiles(inputPath);
-        this.debug("inputFiles (" + inputFiles.size() + "): " + inputFiles);
-
-        outputFiles = new ArrayList<>();
-        this.initOutputFiles(outputPath);
-    }
-
-    public IOManager(String inputPath, String outputPath, boolean isDebug, List<String> allowedExtensions) {
-        this.isDebug = isDebug;
-        this.allowedExtensions = allowedExtensions;
-
-        inputFiles = new ArrayList<>();
-        this.debug("Reading files from " + inputPath + "!");
-        this.initInputFiles(inputPath);
-        this.debug("inputFiles (" + inputFiles.size() + "): " + inputFiles);
-
-        outputFiles = new ArrayList<>();
-        this.initOutputFiles(outputPath);
+    public IOManager(String inputPath, String outputPath) {
+        this.inputPath = inputPath;
+        this.outputPath = outputPath;
     }
 
     private void debug(String message) {
@@ -52,7 +34,7 @@ public class IOManager {
         if (file.isFile()) {
             String fileName = file.getName();
             int lastDotIndex = fileName.lastIndexOf('.');
-
+            if(targetSpecificLevel != -1 && !fileName.contains(String.format("level%d", targetSpecificLevel))) return;
             if (lastDotIndex > 0) {
                 String extension = fileName.substring(lastDotIndex).toLowerCase();
                 if (allowedExtensions.contains(extension)) {
@@ -84,7 +66,29 @@ public class IOManager {
         this.debug("Writing files to " + outputPath + "!");
         this.debug("outputFiles (" + this.outputFiles.size() + "): " + outputFiles);
     }
+    public void setAllowedExtensions(List<String> allowedExtensions) {
+        this.allowedExtensions = allowedExtensions;
+    }
 
+    public void setDebug(Boolean debug) {
+        if(debug == null) isDebug = false;
+        else isDebug = debug;
+    }
+
+    public void setTargetSpecificLevel(Integer targetSpecificLevel) {
+        if(targetSpecificLevel == null) this.targetSpecificLevel = -1;
+        else this.targetSpecificLevel = targetSpecificLevel;
+    }
+
+    public void initilize() {
+        inputFiles = new ArrayList<>();
+        this.debug("Reading files from " + inputPath + "!");
+        this.initInputFiles(inputPath);
+        this.debug("inputFiles (" + inputFiles.size() + "): " + inputFiles);
+
+        outputFiles = new ArrayList<>();
+        this.initOutputFiles(outputPath);
+    }
     public void execute() {
         //execute Main.solve() for every input file
         for(int i = 0; i < inputFiles.size(); i++) {

@@ -1,9 +1,10 @@
 <configuration>
     <inputPath>./example/</inputPath>
     <outputPath>./output/</outputPath>
-    <isDebug>true</isDebug>
     <allowedExtensions>
         <extension>.in</extension>
         <extension>.txt</extension>
     </allowedExtensions>
+    <targetSpecificLevel>1</targetSpecificLevel>
+    <isDebug>true</isDebug>
 </configuration>

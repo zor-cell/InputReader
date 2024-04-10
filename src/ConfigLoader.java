@@ -20,9 +20,24 @@ public class ConfigLoader {
             Document doc = db.parse(is);
             doc.getDocumentElement().normalize();
 
-            config.setInputPath(doc.getElementsByTagName("inputPath").item(0).getTextContent());
-            config.setOutputPath(doc.getElementsByTagName("outputPath").item(0).getTextContent());
-            config.setDebug(Boolean.parseBoolean(doc.getElementsByTagName("isDebug").item(0).getTextContent()));
+            try {
+                config.setInputPath(doc.getElementsByTagName("inputPath").item(0).getTextContent());
+                config.setOutputPath(doc.getElementsByTagName("outputPath").item(0).getTextContent());
+            } catch (NullPointerException e) {
+                throw new IllegalArgumentException("In file there are missing required settings - " + configFile);
+            }
+
+            if (doc.getElementsByTagName("isDebug") != null && doc.getElementsByTagName("isDebug").item(0) != null) {
+                config.setDebug(Boolean.parseBoolean(doc.getElementsByTagName("isDebug").item(0).getTextContent()));
+            } else {
+                config.setDebug(false);
+            }
+
+            if (doc.getElementsByTagName("targetSpecificLevel") != null && doc.getElementsByTagName("targetSpecificLevel").item(0) != null) {
+                config.setTargetSpecificLevel(Integer.parseInt(doc.getElementsByTagName("targetSpecificLevel").item(0).getTextContent()));
+            } else {
+                config.setTargetSpecificLevel(-1);
+            }
 
             NodeList allowedExtensionsList = doc.getElementsByTagName("allowedExtensions");
             if (allowedExtensionsList.getLength() > 0) {
@@ -42,8 +57,9 @@ public class ConfigLoader {
 class Config {
     private String inputPath;
     private String outputPath;
-    private boolean isDebug;
+    private Integer targetSpecificLevel;
     private List<String> allowedExtensions = new ArrayList<>();
+    private Boolean isDebug;
 
     public String getInputPath() {
         return inputPath;
@@ -61,11 +77,11 @@ class Config {
         this.outputPath = outputPath;
     }
 
-    public boolean isDebug() {
+    public Boolean isDebug() {
         return isDebug;
     }
 
-    public void setDebug(boolean debug) {
+    public void setDebug(Boolean debug) {
         isDebug = debug;
     }
 
@@ -75,5 +91,13 @@ class Config {
 
     public void setAllowedExtensions(List<String> allowedExtensions) {
         this.allowedExtensions = allowedExtensions;
+    }
+
+    public void setTargetSpecificLevel(int targetSpecificLevel) {
+        this.targetSpecificLevel = targetSpecificLevel;
+    }
+
+    public Integer getTargetSpecificLevel() {
+        return targetSpecificLevel;
     }
 }
