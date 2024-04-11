@@ -37,7 +37,7 @@ A working program should contain the following aspects:
 ### TODO
 - [x] Support for 2d array inputs
 - [x] Support for CCC level detection
-- [x] Support for recursive folder search (just one level at the moment)  
+- [x] Support for recursive folder search
 - [x] Support for specification of file types or names to be used or ignored as input  
 - [ ] A Debugger to prettify debug output and show more information with specific data types  
 reverse engineering?
