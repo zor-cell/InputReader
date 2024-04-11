@@ -4,20 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.io.FileWriter;
-import java.util.Arrays;
 
 public class IOManager {
     private List<File> inputFiles;
     private List<File> outputFiles;
     private List<String> allowedExtensions;
     private boolean isDebug;
-    private int targetSpecificLevel;
+    private int targetSpecificLevelInt;
+    private boolean targetExampleFiles;
     private String inputPath;
     private String outputPath;
+    private boolean isCleanupOutput;
 
-    public IOManager(String inputPath, String outputPath) {
+    public IOManager(String inputPath, String outputPath, List<String> allowedExtensions) {
         this.inputPath = inputPath;
         this.outputPath = outputPath;
+        this.allowedExtensions = allowedExtensions;
     }
 
     private void debug(String message) {
@@ -34,7 +36,8 @@ public class IOManager {
         if (file.isFile()) {
             String fileName = file.getName();
             int lastDotIndex = fileName.lastIndexOf('.');
-            if(targetSpecificLevel != -1 && !fileName.contains(String.format("level%d", targetSpecificLevel))) return;
+            if( (targetSpecificLevelInt != -1 && !fileName.contains(String.format("level%d", targetSpecificLevelInt)))
+                    || (targetExampleFiles && !fileName.contains("example"))) return;
             if (lastDotIndex > 0) {
                 String extension = fileName.substring(lastDotIndex).toLowerCase();
                 if (allowedExtensions.contains(extension)) {
@@ -63,31 +66,80 @@ public class IOManager {
             this.outputFiles.add(new File(filePath + fileName));
         }
 
-        this.debug("Writing files to " + outputPath + "!");
-        this.debug("outputFiles (" + this.outputFiles.size() + "): " + outputFiles);
-    }
-    public void setAllowedExtensions(List<String> allowedExtensions) {
-        this.allowedExtensions = allowedExtensions;
     }
 
     public void setDebug(Boolean debug) {
         if(debug == null) isDebug = false;
         else isDebug = debug;
     }
-
-    public void setTargetSpecificLevel(Integer targetSpecificLevel) {
-        if(targetSpecificLevel == null) this.targetSpecificLevel = -1;
-        else this.targetSpecificLevel = targetSpecificLevel;
+    public void setCleanupOutput(Boolean cleanupOutput) {
+        if(cleanupOutput == null) this.isCleanupOutput = false;
+        else this.isCleanupOutput = cleanupOutput;
     }
 
-    public void initilize() {
+    public void setTargetSpecificLevel(String targetSpecificLevel) {
+        this.targetSpecificLevelInt = -1;
+        this.targetExampleFiles = false;
+
+        if (targetSpecificLevel == null || targetSpecificLevel.isBlank()) {
+            return;
+        }
+
+        targetSpecificLevel = targetSpecificLevel.trim();
+
+        // check format
+        if (!targetSpecificLevel.matches("^-?\\d*e?$")) {
+            throw new IllegalArgumentException("The targetSpecificLevel value doesn't match expectation. Please check it in config. Has to be of format <number><e> (both optional)");
+        }
+
+        // check 'e'
+        if (targetSpecificLevel.endsWith("e")) {
+            targetExampleFiles = true;
+            targetSpecificLevel = targetSpecificLevel.substring(0, targetSpecificLevel.length() - 1);
+        }
+
+        // check number
+        if (!targetSpecificLevel.isEmpty()) {
+            try {
+                targetSpecificLevelInt = Integer.parseInt(targetSpecificLevel);
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("The targetSpecificLevel value doesn't match expectation. Please check it in config. Has to be of format <number><e> (both optional)");
+            }
+        }
+    }
+
+    private void cleanDirectory(File dir) {
+        File[] files = dir.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    cleanDirectory(file);
+                }
+                file.delete();
+            }
+        }
+    }
+
+    public void initialize() {
+        File inputDirectory = new File(inputPath);
+        File outputDirectory = new File(outputPath);
+        if (!inputDirectory.exists() || !inputDirectory.isDirectory() || !outputDirectory.exists() || !outputDirectory.isDirectory()) {
+            throw new IllegalArgumentException("Value of input or output directory is invalid. No such directory exists. Please look into config file");
+        }
+
         inputFiles = new ArrayList<>();
-        this.debug("Reading files from " + inputPath + "!");
+        this.debug("Reading files from " + inputPath);
         this.initInputFiles(inputPath);
         this.debug("inputFiles (" + inputFiles.size() + "): " + inputFiles);
 
+        if (isCleanupOutput) {
+            this.debug("Cleaning up output directory");
+            cleanDirectory(outputDirectory);
+        }
         outputFiles = new ArrayList<>();
+        this.debug("Initiation of output files to " + outputPath);
         this.initOutputFiles(outputPath);
+        this.debug("outputFiles (" + this.outputFiles.size() + "): " + outputFiles);
     }
     public void execute() {
         //execute Main.solve() for every input file

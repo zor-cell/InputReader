@@ -1,10 +1,11 @@
 <configuration>
-    <inputPath>./example/</inputPath>
+    <inputPath>./input/</inputPath>
     <outputPath>./output/</outputPath>
     <allowedExtensions>
         <extension>.in</extension>
         <extension>.txt</extension>
     </allowedExtensions>
-    <targetSpecificLevel>1</targetSpecificLevel>
+    <targetSpecificLevel>-1e</targetSpecificLevel>
+    <cleanupOutput>true</cleanupOutput>
     <isDebug>true</isDebug>
 </configuration>

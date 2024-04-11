@@ -27,24 +27,34 @@ public class ConfigLoader {
                 throw new IllegalArgumentException("In file there are missing required settings - " + configFile);
             }
 
+            if (doc.getElementsByTagName("targetSpecificLevel") != null && doc.getElementsByTagName("targetSpecificLevel").item(0) != null) {
+                config.setTargetSpecificLevel(doc.getElementsByTagName("targetSpecificLevel").item(0).getTextContent());
+            } else {
+                config.setTargetSpecificLevel("-1");
+            }
+
+            if (doc.getElementsByTagName("cleanupOutput") != null && doc.getElementsByTagName("cleanupOutput").item(0) != null) {
+                config.setCleanupOutput(Boolean.parseBoolean(doc.getElementsByTagName("cleanupOutput").item(0).getTextContent()));
+            } else {
+                config.setCleanupOutput(false);
+            }
+
             if (doc.getElementsByTagName("isDebug") != null && doc.getElementsByTagName("isDebug").item(0) != null) {
                 config.setDebug(Boolean.parseBoolean(doc.getElementsByTagName("isDebug").item(0).getTextContent()));
             } else {
                 config.setDebug(false);
             }
 
-            if (doc.getElementsByTagName("targetSpecificLevel") != null && doc.getElementsByTagName("targetSpecificLevel").item(0) != null) {
-                config.setTargetSpecificLevel(Integer.parseInt(doc.getElementsByTagName("targetSpecificLevel").item(0).getTextContent()));
-            } else {
-                config.setTargetSpecificLevel(-1);
-            }
-
-            NodeList allowedExtensionsList = doc.getElementsByTagName("allowedExtensions");
-            if (allowedExtensionsList.getLength() > 0) {
-                NodeList extensionNodes = ((Element) allowedExtensionsList.item(0)).getElementsByTagName("extension");
-                for (int i = 0; i < extensionNodes.getLength(); i++) {
-                    config.getAllowedExtensions().add(extensionNodes.item(i).getTextContent());
+            try {
+                NodeList allowedExtensionsList = doc.getElementsByTagName("allowedExtensions");
+                if (allowedExtensionsList.getLength() > 0) {
+                    NodeList extensionNodes = ((Element) allowedExtensionsList.item(0)).getElementsByTagName("extension");
+                    for (int i = 0; i < extensionNodes.getLength(); i++) {
+                        config.getAllowedExtensions().add(extensionNodes.item(i).getTextContent());
+                    }
                 }
+            } catch (NullPointerException e) {
+                throw new IllegalArgumentException("In file there are missing required settings - " + configFile);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -57,9 +67,11 @@ public class ConfigLoader {
 class Config {
     private String inputPath;
     private String outputPath;
-    private Integer targetSpecificLevel;
+    private String targetSpecificLevel;
     private List<String> allowedExtensions = new ArrayList<>();
+    private Boolean cleanupOutput;
     private Boolean isDebug;
+
 
     public String getInputPath() {
         return inputPath;
@@ -84,6 +96,13 @@ class Config {
     public void setDebug(Boolean debug) {
         isDebug = debug;
     }
+    public Boolean getCleanupOutput() {
+        return cleanupOutput;
+    }
+
+    public void setCleanupOutput(Boolean cleanupOutput) {
+        this.cleanupOutput = cleanupOutput;
+    }
 
     public List<String> getAllowedExtensions() {
         return allowedExtensions;
@@ -93,11 +112,11 @@ class Config {
         this.allowedExtensions = allowedExtensions;
     }
 
-    public void setTargetSpecificLevel(int targetSpecificLevel) {
+    public void setTargetSpecificLevel(String targetSpecificLevel) {
         this.targetSpecificLevel = targetSpecificLevel;
     }
 
-    public Integer getTargetSpecificLevel() {
+    public String getTargetSpecificLevel() {
         return targetSpecificLevel;
     }
 }
