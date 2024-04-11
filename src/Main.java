@@ -3,21 +3,35 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
-    //settings
-    private final static String inputPath = "src/example/";
-    private final static String outputPath = "src/output/";
-    private final static boolean isDebug = false;
 
-    //DO NOT CHANGE METHOD
+    /**
+     * Do not change this method. Method Loads the Config and initializes the IOManager.
+     * @param args
+     */
     public static void main(String[] args) {
-        IOManager ioManager = new IOManager(inputPath, outputPath, isDebug);
+        Config config = ConfigLoader.loadConfig("config.xml");
+
+        IOManager ioManager = new IOManager(config.getInputPath(), config.getOutputPath(), config.getAllowedExtensions());
+
+        ioManager.setDebug(config.isDebug());
+        ioManager.setTargetSpecificLevel(config.getTargetSpecificLevel());
+        ioManager.setCleanupOutput(config.getCleanupOutput());
+
+        ioManager.initialize();
         ioManager.execute();
     }
 
-    //method for reading input from input file and writing solution to output file
-    //gets applied to all given input files
-    //example of a program to output line length of each line
-    //DO NOT CHANGE PARAMETERS OR RETURN TYPE
+
+    /**
+     * method for reading input from input file and writing solution to output file
+     * gets applied to all given input files
+     * example of a program to output line length of each line
+     * DO NOT CHANGE PARAMETERS OR RETURN TYPE
+     *
+     * @param reader
+     * @param writer
+     * @throws IOException
+     */
     public static void solve(Scanner reader, FileWriter writer) throws IOException {
         //read lines from input
         //and write to file using: writer.write(result + "\n");
