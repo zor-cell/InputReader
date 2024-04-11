@@ -3,7 +3,11 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
-    //DO NOT CHANGE METHOD
+
+    /**
+     * Do not change this method. Method Loads the Config and initializes the IOManager.
+     * @param args
+     */
     public static void main(String[] args) {
         Config config = ConfigLoader.loadConfig("config.xml");
 
@@ -17,10 +21,17 @@ public class Main {
         ioManager.execute();
     }
 
-    //method for reading input from input file and writing solution to output file
-    //gets applied to all given input files
-    //example of a program to output line length of each line
-    //DO NOT CHANGE PARAMETERS OR RETURN TYPE
+
+    /**
+     * method for reading input from input file and writing solution to output file
+     * gets applied to all given input files
+     * example of a program to output line length of each line
+     * DO NOT CHANGE PARAMETERS OR RETURN TYPE
+     *
+     * @param reader
+     * @param writer
+     * @throws IOException
+     */
     public static void solve(Scanner reader, FileWriter writer) throws IOException {
         //read lines from input
         //and write to file using: writer.write(result + "\n");

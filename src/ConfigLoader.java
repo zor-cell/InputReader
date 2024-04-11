@@ -7,7 +7,20 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
 
+/**
+ * The {@code ConfigLoader} class is responsible for loading and parsing
+ * configuration settings from an XML file into a {@code Config} object.
+ * The XML file is expected to define various settings such as input and output paths,
+ * allowed file extensions, and other operational parameters for an application.
+ */
 public class ConfigLoader {
+
+    /**
+     * Loads configuration settings from the specified config XML file and populates a {@code Config} object with these settings.
+     * @param configFile The path to the XML configuration file. It is expected to be accessible via the classloader's resources.
+     * @return A {@code Config} object populated with the settings defined in the XML file. Returns a {@code Config} object with default settings if the XML file does not specify them.
+     * @throws IllegalArgumentException if the XML file cannot be found, or if required settings are missing or malformed in the file. This exception is also thrown if there's an error processing the XML file.
+     */
     public static Config loadConfig(String configFile) {
         Config config = new Config();
         try {
@@ -63,7 +76,12 @@ public class ConfigLoader {
     }
 }
 
-
+/**
+ * The {@code Config} class represents the configuration settings for the application.
+ * It encapsulates various settings that can be loaded from a configuration file, including
+ * paths for input and output, debug flags, cleanup behavior, allowed file extensions,
+ * and a specific target level for processing.
+ */
 class Config {
     private String inputPath;
     private String outputPath;
