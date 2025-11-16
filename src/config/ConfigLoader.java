@@ -1,6 +1,7 @@
 package config;
 
 import java.io.File;
+import java.util.logging.Level;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
@@ -49,10 +50,10 @@ public class ConfigLoader {
                 config.setCleanupOutput(false);
             }
 
-            if (doc.getElementsByTagName("isDebug") != null && doc.getElementsByTagName("isDebug").item(0) != null) {
-                config.setDebug(Boolean.parseBoolean(doc.getElementsByTagName("isDebug").item(0).getTextContent()));
+            if (doc.getElementsByTagName("logLevel") != null && doc.getElementsByTagName("logLevel").item(0) != null) {
+                config.setLogLevel(Level.parse(doc.getElementsByTagName("logLevel").item(0).getTextContent().toUpperCase()));
             } else {
-                config.setDebug(false);
+                config.setLogLevel(Level.INFO);
             }
 
             try {

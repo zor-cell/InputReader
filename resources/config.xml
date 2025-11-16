@@ -8,5 +8,5 @@
 
     <targetSpecificLevel>99</targetSpecificLevel>  <!-- (Optional) Specifies a target level. This is specific for CCC (level<number>.in files). The format '<number>e' indicates the number part and an 'e' (both optional). If 'e' is present only example files are considered. Number -1 represents all levels.-->
     <cleanupOutput>true</cleanupOutput>             <!-- (Optional) A boolean value indicating whether the output directory should be cleaned up (i.e., existing files removed) before writing new output files. -->
-    <isDebug>false</isDebug>                         <!-- (Optional) A debug flag. If true, the application might provide additional debug information-->
+    <logLevel>INFO</logLevel> <!--(Optional) The log level indicating what information is logged. Valid values are: ALL, INFO, FINE, OFF-->
 </configuration>

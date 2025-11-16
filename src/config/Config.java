@@ -1,7 +1,10 @@
 package config;
 
 import java.util.ArrayList;
-import java.util.List; /**
+import java.util.List;
+import java.util.logging.Level;
+
+/**
  * The {@code config.Config} class represents the configuration settings for the application.
  * It encapsulates various settings that can be loaded from a configuration file, including
  * paths for input and output, debug flags, cleanup behavior, allowed file extensions,
@@ -13,7 +16,7 @@ public class Config {
     private String targetSpecificLevel;
     private List<String> allowedExtensions = new ArrayList<>();
     private Boolean cleanupOutput;
-    private Boolean isDebug;
+    private Level logLevel;
 
 
     public String getInputPath() {
@@ -32,13 +35,14 @@ public class Config {
         this.outputPath = outputPath;
     }
 
-    public Boolean isDebug() {
-        return isDebug;
+    public Level getLogLevel() {
+        return logLevel;
     }
 
-    public void setDebug(Boolean debug) {
-        isDebug = debug;
+    public void setLogLevel(Level logLevel) {
+        this.logLevel = logLevel;
     }
+
     public Boolean getCleanupOutput() {
         return cleanupOutput;
     }

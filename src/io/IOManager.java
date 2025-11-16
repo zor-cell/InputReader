@@ -1,5 +1,7 @@
 package io;
 
+import config.Config;
+import log.CustomLogger;
 import solver.Main;
 
 import java.io.File;
@@ -8,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.io.FileWriter;
+import java.util.logging.Logger;
 
 /**
  * Manages input and output file operations for the application.
@@ -15,38 +18,24 @@ import java.io.FileWriter;
  * and processes them according to the application's configuration.
  */
 public class IOManager {
-    private List<File> inputFiles;
-    private List<File> outputFiles;
-    private List<String> allowedExtensions;
-    private boolean isDebug;
+    private static final Logger log = CustomLogger.getLogger();
+
+    private final Config config;
     private int targetSpecificLevelInt;
     private boolean targetExampleFiles;
-    private String inputPath;
-    private String outputPath;
-    private boolean isCleanupOutput;
+
+    private List<File> inputFiles;
+    private List<File> outputFiles;
 
     /**
      * Constructs an io.IOManager with specified input and output paths, and allowed extensions. These values are required!
      *
-     * @param inputPath          Path to the directory containing input files.
-     * @param outputPath         Path to the directory where output files should be placed.
-     * @param allowedExtensions  List of file extensions that are allowed for processing.
+     * @param config Config containing all information for the IO management.
      */
-    public IOManager(String inputPath, String outputPath, List<String> allowedExtensions) {
-        this.inputPath = inputPath;
-        this.outputPath = outputPath;
-        this.allowedExtensions = allowedExtensions;
-    }
+    public IOManager(Config config) {
+        this.config = config;
 
-    /**
-     * Prints a debug message if debugging is enabled.
-     *
-     * @param message The debug message to print.
-     */
-    private void debug(String message) {
-        if(this.isDebug) {
-            System.out.println("[DEBUG]: " + message);
-        }
+        setTargetSpecificLevel(config.getTargetSpecificLevel());
     }
 
     /**
@@ -68,7 +57,7 @@ public class IOManager {
                     || (targetExampleFiles && !fileName.contains("example"))) return;
             if (lastDotIndex > 0) {
                 String extension = fileName.substring(lastDotIndex).toLowerCase();
-                if (allowedExtensions.contains(extension)) {
+                if (config.getAllowedExtensions().contains(extension)) {
                     inputFiles.add(file);
                 }
             }
@@ -103,32 +92,13 @@ public class IOManager {
     }
 
     /**
-     * Setter for debug
-     * @param debug The Boolean flag indicating whether debug mode should be enabled. If null, debug mode is disabled by default.
-     */
-    public void setDebug(Boolean debug) {
-        if(debug == null) isDebug = false;
-        else isDebug = debug;
-    }
-
-    /**
-     * Sets whether the output directory should be cleaned
-     *
-     * @param cleanupOutput The Boolean flag indicating whether the output directory should be cleaned. If null, cleanup is disabled by default.
-     */
-    public void setCleanupOutput(Boolean cleanupOutput) {
-        if(cleanupOutput == null) this.isCleanupOutput = false;
-        else this.isCleanupOutput = cleanupOutput;
-    }
-
-    /**
      * Parses and sets the target specific level from a string. The string is expected to
      * be in the format of an optional number followed by an optional 'e'. If 'e' is present, it indicates that example files should be targeted.
      * The number specifies a specific level to be targeted. If the string does not match the expected format or if the number is invalid, an IllegalArgumentException is thrown.
      *
      * @param targetSpecificLevel The string representing the target specific level and whether to target example files.
      */
-    public void setTargetSpecificLevel(String targetSpecificLevel) {
+    private void setTargetSpecificLevel(String targetSpecificLevel) {
         this.targetSpecificLevelInt = -1;
         this.targetExampleFiles = false;
 
@@ -183,25 +153,25 @@ public class IOManager {
      * and preparing output files.
      */
     public void initialize() {
-        File inputDirectory = new File(inputPath);
-        File outputDirectory = new File(outputPath);
+        File inputDirectory = new File(config.getInputPath());
+        File outputDirectory = new File(config.getOutputPath());
         if (!inputDirectory.exists() || !inputDirectory.isDirectory() || !outputDirectory.exists() || !outputDirectory.isDirectory()) {
             throw new IllegalArgumentException("Value of input or output directory is invalid. No such directory exists. Please look into config file");
         }
 
         inputFiles = new ArrayList<>();
-        this.debug("Reading files from " + inputPath);
-        this.initInputFiles(inputPath);
-        this.debug("inputFiles (" + inputFiles.size() + "): " + inputFiles);
+        log.finer("Reading files from " + config.getInputPath());
+        this.initInputFiles(config.getInputPath());
+        log.finer("inputFiles (" + inputFiles.size() + "): " + inputFiles);
 
-        if (isCleanupOutput) {
-            this.debug("Cleaning up output directory");
+        if (config.getCleanupOutput()) {
+            log.finer("Cleaning up output directory");
             cleanDirectory(outputDirectory);
         }
         outputFiles = new ArrayList<>();
-        this.debug("Initiation of output files to " + outputPath);
-        this.initOutputFiles(outputPath);
-        this.debug("outputFiles (" + this.outputFiles.size() + "): " + outputFiles);
+        log.finer("Initiation of output files to " + config.getOutputPath());
+        this.initOutputFiles(config.getOutputPath());
+        log.finer("outputFiles (" + this.outputFiles.size() + "): " + outputFiles);
     }
 
     /**
@@ -210,10 +180,11 @@ public class IOManager {
      */
     public void execute() {
         //execute main.Main.solve() for every input file
+        log.info("Start execution");
         for(int i = 0; i < inputFiles.size(); i++) {
             File inputFile = this.inputFiles.get(i);
             File outputFile = this.outputFiles.get(i);
-            this.debug("File " + inputFile.getName() + " in progress!");
+            log.finer("File " + inputFile.getName() + " in progress!");
 
             //Create Scanner for reading from file and writer for writing to file
             Scanner reader;
@@ -242,6 +213,6 @@ public class IOManager {
                 e.printStackTrace();
             }
         }
-        this.debug("All Files done!");
+        log.info("All Files done!");
     }
 }

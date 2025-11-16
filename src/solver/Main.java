@@ -3,12 +3,15 @@ package solver;
 import config.Config;
 import config.ConfigLoader;
 import io.IOManager;
+import log.CustomLogger;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 public class Main {
+    private static Logger log;
 
     /**
      * Do not change this method. Method Loads the config.Config and initializes the io.IOManager.
@@ -17,12 +20,10 @@ public class Main {
     public static void main(String[] args) {
         Config config = ConfigLoader.loadConfig("resources/config.xml");
 
-        IOManager ioManager = new IOManager(config.getInputPath(), config.getOutputPath(), config.getAllowedExtensions());
+        CustomLogger.createLogger(config);
+        log = CustomLogger.getLogger();
 
-        ioManager.setDebug(config.isDebug());
-        ioManager.setTargetSpecificLevel(config.getTargetSpecificLevel());
-        ioManager.setCleanupOutput(config.getCleanupOutput());
-
+        IOManager ioManager = new IOManager(config);
         ioManager.initialize();
         ioManager.execute();
     }
@@ -46,6 +47,8 @@ public class Main {
 
         int result = 0;
         for(int run = 0;run < maxRuns;run++) {
+            log.fine("Run " + run);
+
             String line = reader.nextLine();
             result = line.length();
 
