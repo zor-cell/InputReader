@@ -19,6 +19,7 @@ A working program should contain the following aspects:
 - Read lines of input file with given java Scanner (see [Documentation](https://docs.oracle.com/javase/8/docs/api/java/util/Scanner.html))  
 - Compute result for input
 - Write result to given java FileWriter (using ```writer.write(result + "\n");```);
+
 **resources/config.xml:** In this file you can make configuration to the io.IOManager. There exist a few which are described here and in the file
 
 #### config.xml settings:
@@ -32,9 +33,4 @@ A working program should contain the following aspects:
 
 **cleanupOutput (Optional):** A boolean value indicating whether the output directory should be cleaned up (i.e., existing files removed) before writing new output files.
 
-**isDebug (Optional):** Enables or disables debug mode. When set to true, the application will provide additional debug information during its execution.
-
-### TODO 
-- [ ] A Debugger to prettify debug output and show more information with specific data types  
-reverse engineering?
-
+**logLevel (Optional):** The log level indicating what information is logged. Valid values are: ALL, INFO, FINE, FINER, OFF
