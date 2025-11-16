@@ -1,3 +1,9 @@
+package solver;
+
+import config.Config;
+import config.ConfigLoader;
+import io.IOManager;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
@@ -5,11 +11,11 @@ import java.util.Scanner;
 public class Main {
 
     /**
-     * Do not change this method. Method Loads the Config and initializes the IOManager.
+     * Do not change this method. Method Loads the config.Config and initializes the io.IOManager.
      * @param args
      */
     public static void main(String[] args) {
-        Config config = ConfigLoader.loadConfig("config.xml");
+        Config config = ConfigLoader.loadConfig("resources/config.xml");
 
         IOManager ioManager = new IOManager(config.getInputPath(), config.getOutputPath(), config.getAllowedExtensions());
 
@@ -35,11 +41,11 @@ public class Main {
     public static void solve(Scanner reader, FileWriter writer) throws IOException {
         //read lines from input
         //and write to file using: writer.write(result + "\n");
-        int n = reader.nextInt();
+        int maxRuns = reader.nextInt();
         reader.nextLine(); //skip linebreak
 
         int result = 0;
-        for(int i = 0;i < n;i++) {
+        for(int run = 0;run < maxRuns;run++) {
             String line = reader.nextLine();
             result = line.length();
 

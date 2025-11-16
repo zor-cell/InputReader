@@ -1,3 +1,7 @@
+package io;
+
+import solver.Main;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,7 +26,7 @@ public class IOManager {
     private boolean isCleanupOutput;
 
     /**
-     * Constructs an IOManager with specified input and output paths, and allowed extensions. These values are required!
+     * Constructs an io.IOManager with specified input and output paths, and allowed extensions. These values are required!
      *
      * @param inputPath          Path to the directory containing input files.
      * @param outputPath         Path to the directory where output files should be placed.
@@ -173,7 +177,7 @@ public class IOManager {
     }
 
     /**
-     * Initializes the IOManager by preparing the input and output files
+     * Initializes the io.IOManager by preparing the input and output files
      * based on the application's configuration settings.
      * This includes reading input files, optionally cleaning the output directory,
      * and preparing output files.
@@ -205,7 +209,7 @@ public class IOManager {
      * Reads content from each input file, processes it, and writes the result to the corresponding output file.
      */
     public void execute() {
-        //execute Main.solve() for every input file
+        //execute main.Main.solve() for every input file
         for(int i = 0; i < inputFiles.size(); i++) {
             File inputFile = this.inputFiles.get(i);
             File outputFile = this.outputFiles.get(i);

@@ -2,24 +2,24 @@
 
 ### Description
 This repository contains an input reader implemented in java that can read from files or
-folders (ie all files inside a folder). The main purpose of this project is to take over
+folders (ie all files inside a folder). The solver purpose of this project is to take over
 tedious Input- and Output Management in Coding competitions. This repository can be used 
 as a template to build your solution on.\
-This template was created specificly for the [CCC](https://codingcontest.org).
+This template was created specifically for the [CCC](https://codingcontest.org).
 
 Made by **[Philippe Zorman](https://github.com/zor-cell)**, **[Lutu](https://github.com/Lutu-gl)**
 
 ### Usage
-**src/IOManager.java:** This class takes over the required logic and error handling for inputs and outputs, it should not be changed.  
+**src/io.IOManager.java:** This class takes over the required logic and error handling for inputs and outputs, it should not be changed.  
 
-**src/Main.java:** This class serves as the interface for the user to implement their code.  
+**src/solver.Main.java:** This class serves as the interface for the user to implement their code.  
 
-**void Main.solve():** This method gets run for every file in the established inputPath. 
+**void solver.Main.solve():** This method gets run for every file in the established inputPath. 
 A working program should contain the following aspects:
 - Read lines of input file with given java Scanner (see [Documentation](https://docs.oracle.com/javase/8/docs/api/java/util/Scanner.html))  
 - Compute result for input
 - Write result to given java FileWriter (using ```writer.write(result + "\n");```);
-**resources/config.xml:** In this file you can make configuration to the IOManager. There exist a few which are described here and in the file
+**resources/config.xml:** In this file you can make configuration to the io.IOManager. There exist a few which are described here and in the file
 
 #### config.xml settings:
 **inputPath:** Specifies the directory path where the input files are located. For instance, ./input/ means that the application will look for input files in the input directory relative to the application's execution path. (recommended)
@@ -34,11 +34,7 @@ A working program should contain the following aspects:
 
 **isDebug (Optional):** Enables or disables debug mode. When set to true, the application will provide additional debug information during its execution.
 
-### TODO
-- [x] Support for 2d array inputs
-- [x] Support for CCC level detection
-- [x] Support for recursive folder search
-- [x] Support for specification of file types or names to be used or ignored as input  
+### TODO 
 - [ ] A Debugger to prettify debug output and show more information with specific data types  
 reverse engineering?
 
