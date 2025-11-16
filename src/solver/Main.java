@@ -49,7 +49,7 @@ public class Main {
             log.fine("Run " + run);
 
             //compute sum of each line
-            List<Integer> list = IOUtils.readLine(reader, Integer::parseInt, " ");
+            List<Integer> list = IOUtils.readList(reader, " ", Integer::parseInt);
             int sum = list.stream().mapToInt(Integer::intValue).sum();
 
             //write result to file
