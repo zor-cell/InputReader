@@ -2,6 +2,7 @@ package solver;
 
 import config.VerificationConfig;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import log.CustomLogger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -12,8 +13,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 public class SolutionVerifier {
+    private static final Logger log = CustomLogger.getLogger();
+
     private final VerificationConfig config;
     private final WebDriver driver;
     private FileWriter writer;
@@ -56,9 +60,16 @@ public class SolutionVerifier {
             WebElement resultDiv = driver.findElement(statusLocator);
             String resultText = resultDiv.getText();
 
-            writer.write(String.format("Validation run %d exited with %s! Input: %s, Output: %s\n", run, resultText, inputContent, outputContent));
+            String infoText = "";
+            if(config.infoLocator() != null) {
+                By infoLocator = getLocator(config.infoLocator());
+                WebElement infoDiv = driver.findElement(infoLocator);
+                infoText += infoDiv.getText();
+            }
+
+            writer.write(String.format("Validation run %d exited with %s! Additional Info: '%s' | Input: %s | Output: %s\n", run, resultText, infoText, inputContent, outputContent));
         } catch (Exception e) {
-            System.err.println("Visualizer failed");
+           log.severe("Visualizer failed");
             e.printStackTrace();
         }
     }

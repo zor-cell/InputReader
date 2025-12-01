@@ -238,7 +238,7 @@ public class IOManager {
         String originalFileName = outputFile.getName();
         int dotIndex = originalFileName.lastIndexOf('.');
         String baseName = (dotIndex == -1) ? originalFileName : originalFileName.substring(0, dotIndex);
-        String newFileName = baseName + ".verification";
+        String newFileName = baseName + ".ver";
 
         return new File(outputFile.getParentFile(), newFileName);
     }
