@@ -33,11 +33,8 @@ public class VisualizerVerifier {
         driver = new ChromeDriver(options);
     }
 
-    public void initWriter(FileWriter writer) {
+    public void checkValidity(Scanner input, Scanner output, FileWriter writer) throws IOException {
         this.writer = writer;
-    }
-
-    public void checkValidity(Scanner input, Scanner output) throws IOException {
         Main.verify(input, output, this);
     }
 

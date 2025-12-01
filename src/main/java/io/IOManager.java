@@ -194,39 +194,50 @@ public class IOManager {
             File outputFile = this.outputFiles.get(i);
             log.finer("File " + inputFile.getName() + " in progress!");
 
-            //Create Scanner for reading from file and writer for writing to file
-            Scanner reader = new Scanner(inputFile);
-            FileWriter writer = new FileWriter(outputFile);
+            //write to file by using user logic
+            try(Scanner reader = new Scanner(inputFile);
+                FileWriter writer = new FileWriter(outputFile)) {
 
-            //write to file in solve method
-            Main.solve(reader, writer);
-
-            //close used resources
-            reader.close();
-            writer.close();
+                Main.solve(reader, writer);
+            } catch(IOException e) {
+                log.severe("Error during solving for file " + inputFile.getName() + ": " + e.getMessage());
+                continue;
+            }
 
             //if visualizer feature is enabled use it on files
-            if(visualizerConfig.enabled()) {
-                try {
-                    File verificationFile = new File(config.outputPath() + outputFile.getName() + "_verification.txt");
-                    var verificationWriter = new FileWriter(verificationFile);
-
-                    var inputScanner = new Scanner(inputFile);
-                    var outputScanner = new Scanner(outputFile);
-
-                    verifier.initWriter(verificationWriter);
-                    verifier.checkValidity(inputScanner, outputScanner);
-                    verificationWriter.close();
-                } catch(IOException e) {
-                    //empty
-                }
+            if(verifier != null) {
+               handleVerification(inputFile, outputFile, verifier);
             }
         }
 
+        //close verifier
         if(verifier != null) {
             verifier.close();
         }
 
         log.info("All Files done!");
+    }
+
+    private void handleVerification(File inputFile, File outputFile, VisualizerVerifier verifier) {
+        File file = createVerificationFile(outputFile);
+
+        try (FileWriter writer = new FileWriter(file);
+             Scanner inputScanner = new Scanner(inputFile);
+             Scanner outputScanner = new Scanner(outputFile);
+        ) {
+            verifier.checkValidity(inputScanner, outputScanner, writer);
+        } catch(IOException e) {
+            log.severe("Error during verification for file " + inputFile.getName() + ": " + e.getMessage());
+        }
+    }
+
+    //creates a verification file for an output file
+    private File createVerificationFile(File outputFile) {
+        String originalFileName = outputFile.getName();
+        int dotIndex = originalFileName.lastIndexOf('.');
+        String baseName = (dotIndex == -1) ? originalFileName : originalFileName.substring(0, dotIndex);
+        String newFileName = baseName + ".verification";
+
+        return new File(outputFile.getParentFile(), newFileName);
     }
 }

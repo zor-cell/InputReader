@@ -34,6 +34,11 @@ public class Main {
         }
     }
 
+    /**
+     * The verification method to read content from a given {@code input} to verify whether a solution from a given {@code output} was correct.
+     * This method is only applied if a visualizer is provided, which can verify correctness.
+     * DO NOT CHANGE PARAMETERS OR RETURN TYPE
+     */
     public static void verify(Scanner input, Scanner output, VisualizerVerifier verifier) throws IOException {
         int maxRuns = input.nextInt();
         input.nextLine(); //skip linebreak
@@ -51,10 +56,6 @@ public class Main {
      * The solving method to read from an input file via {@code reader} and write the solution to an output file via {@code writer}.
      * This method is applied to all input files.
      * DO NOT CHANGE PARAMETERS OR RETURN TYPE
-     *
-     * @param reader
-     * @param writer
-     * @throws IOException
      */
     public static void solve(Scanner reader, FileWriter writer) throws IOException {
         //read lines from input
