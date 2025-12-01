@@ -3,11 +3,14 @@ package config;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
 import solver.Main;
@@ -33,44 +36,45 @@ public class ConfigLoader {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(configStream);
-            doc.getDocumentElement().normalize();
+            Element root = doc.getDocumentElement();
 
-            String inputPath;
-            String outputPath;
-            try {
-                inputPath = doc.getElementsByTagName("inputPath").item(0).getTextContent();
-                outputPath = doc.getElementsByTagName("outputPath").item(0).getTextContent();
-            } catch (NullPointerException e) {
-                throw new IllegalArgumentException("In file there are missing required settings - " + configName);
+            String inputPath = getTagContentFromParent(root, "inputPath");
+            if(inputPath == null) {
+                throw new IllegalArgumentException("Input path is null");
             }
 
-            String targetSpecificLevel = "-1";
-            if (doc.getElementsByTagName("targetSpecificLevel") != null && doc.getElementsByTagName("targetSpecificLevel").item(0) != null) {
-                targetSpecificLevel = doc.getElementsByTagName("targetSpecificLevel").item(0).getTextContent();
+            String outputPath = getTagContentFromParent(root, "outputPath");
+            if(outputPath == null) {
+                throw new IllegalArgumentException("Output path is null");
             }
 
-            boolean cleanupOutput = false;
-            if (doc.getElementsByTagName("cleanupOutput") != null && doc.getElementsByTagName("cleanupOutput").item(0) != null) {
-               cleanupOutput = Boolean.parseBoolean(doc.getElementsByTagName("cleanupOutput").item(0).getTextContent());
+            String targetSpecificLevel = getTagContentFromParent(root, "targetSpecificLevel");
+            if(targetSpecificLevel == null) {
+                targetSpecificLevel = "-1";
+            }
+
+            boolean cleanupOutput = true;
+            String cleanupOutputStr = getTagContentFromParent(root, "cleanupOutput");
+            if (cleanupOutputStr != null) {
+                cleanupOutput = Boolean.parseBoolean(cleanupOutputStr);
             }
 
             Level logLevel = Level.INFO;
-            if (doc.getElementsByTagName("logLevel") != null && doc.getElementsByTagName("logLevel").item(0) != null) {
-                logLevel = Level.parse(doc.getElementsByTagName("logLevel").item(0).getTextContent().toUpperCase());
+            String logLevelStr = getTagContentFromParent(root, "logLevel");
+            if (logLevelStr != null) {
+                logLevel = Level.parse(logLevelStr.toUpperCase());
             }
 
             List<String> allowedExtensions = new ArrayList<>();
-            try {
-                NodeList allowedExtensionsList = doc.getElementsByTagName("allowedExtensions");
-                if (allowedExtensionsList.getLength() > 0) {
-                    NodeList extensionNodes = ((Element) allowedExtensionsList.item(0)).getElementsByTagName("extension");
-                    for (int i = 0; i < extensionNodes.getLength(); i++) {
-                        allowedExtensions.add(extensionNodes.item(i).getTextContent());
-                    }
+            NodeList allowedExtensionsList = root.getElementsByTagName("allowedExtensions");
+            if (allowedExtensionsList.getLength() > 0) {
+                NodeList extensionNodes = ((Element) allowedExtensionsList.item(0)).getElementsByTagName("extension");
+                for (int i = 0; i < extensionNodes.getLength(); i++) {
+                    allowedExtensions.add(extensionNodes.item(i).getTextContent());
                 }
-            } catch (NullPointerException e) {
-                throw new IllegalArgumentException("In file there are missing required settings - " + configName);
             }
+
+            VisualizerConfig visualizerConfig = loadVisualizerConfig(root);
 
             return new Config(
                     inputPath,
@@ -78,12 +82,74 @@ public class ConfigLoader {
                     targetSpecificLevel,
                     allowedExtensions,
                     cleanupOutput,
-                    logLevel
+                    logLevel,
+                    visualizerConfig
             );
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+        return null;
+    }
+
+    public static VisualizerConfig loadVisualizerConfig(Element root) {
+        NodeList visualizerNodes = root.getElementsByTagName("visualizer");
+        if (visualizerNodes.getLength() == 0) {
+            return null;
+        }
+
+        Element visualizerElement = (Element) visualizerNodes.item(0);
+
+        boolean enabled = false;
+        String enabledStr = getTagContentFromParent(visualizerElement, "enabled");
+        if (enabledStr != null) {
+            enabled = Boolean.parseBoolean(enabledStr);
+        }
+
+        boolean headless = true;
+        String headlessStr = getTagContentFromParent(visualizerElement, "headless");
+        if (headlessStr != null) {
+            headless = Boolean.parseBoolean(headlessStr);
+        }
+
+        String visualizerPath = getTagContentFromParent(visualizerElement, "visualizerPath");
+        if (enabled && visualizerPath == null) {
+            throw new IllegalArgumentException("Visualizer is enabled but 'visualizerPath' is missing.");
+        }
+
+        NodeList elementLocatorsNodes = visualizerElement.getElementsByTagName("elementLocators");
+        if(elementLocatorsNodes.getLength() == 0) {
+            return null;
+        }
+
+        Element locatorsElement = (Element) elementLocatorsNodes.item(0);
+
+        // Extract the four specific required locators
+        String inputLocator = getTagContentFromParent(locatorsElement, "inputLocator");
+        String outputLocator = getTagContentFromParent(locatorsElement, "outputLocator");
+        String statusLocator = getTagContentFromParent(locatorsElement, "statusLocator");
+        String infoLocator = getTagContentFromParent(locatorsElement, "infoLocator");
+
+        if (enabled && (inputLocator == null || outputLocator == null || statusLocator == null)) {
+            throw new IllegalArgumentException("Visualizer is enabled but required element locators (input, output, status) are missing.");
+        }
+
+        return new VisualizerConfig(
+                enabled,
+                headless,
+                visualizerPath,
+                inputLocator,
+                outputLocator,
+                statusLocator,
+                infoLocator
+        );
+    }
+
+    private static String getTagContentFromParent(Element parent, String tagName) {
+        NodeList nodeList = parent.getElementsByTagName(tagName);
+        if (nodeList.getLength() > 0 && nodeList.item(0).getTextContent() != null) {
+            return nodeList.item(0).getTextContent().trim();
+        }
         return null;
     }
 }

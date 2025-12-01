@@ -16,7 +16,8 @@ public record Config(
     String targetSpecificLevel,
     List<String> allowedExtensions,
     Boolean cleanupOutput,
-    Level logLevel
+    Level logLevel,
+    VisualizerConfig visualizerConfig
 ) {
 
 }
