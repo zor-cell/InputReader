@@ -35,7 +35,7 @@ public class IOManager {
     public IOManager(Config config) {
         this.config = config;
 
-        setTargetSpecificLevel(config.getTargetSpecificLevel());
+        setTargetSpecificLevel(config.targetSpecificLevel());
     }
 
     /**
@@ -57,7 +57,7 @@ public class IOManager {
                     || (targetExampleFiles && !fileName.contains("example"))) return;
             if (lastDotIndex > 0) {
                 String extension = fileName.substring(lastDotIndex).toLowerCase();
-                if (config.getAllowedExtensions().contains(extension)) {
+                if (config.allowedExtensions().contains(extension)) {
                     inputFiles.add(file);
                 }
             }
@@ -153,24 +153,24 @@ public class IOManager {
      * and preparing output files.
      */
     public void initialize() {
-        File inputDirectory = new File(config.getInputPath());
-        File outputDirectory = new File(config.getOutputPath());
+        File inputDirectory = new File(config.inputPath());
+        File outputDirectory = new File(config.outputPath());
         if (!inputDirectory.exists() || !inputDirectory.isDirectory() || !outputDirectory.exists() || !outputDirectory.isDirectory()) {
             throw new IllegalArgumentException("Value of input or output directory is invalid. No such directory exists. Please look into config file");
         }
 
         inputFiles = new ArrayList<>();
-        log.finer("Reading files from " + config.getInputPath());
-        this.initInputFiles(config.getInputPath());
+        log.finer("Reading files from " + config.inputPath());
+        this.initInputFiles(config.outputPath());
         log.finer("inputFiles (" + inputFiles.size() + "): " + inputFiles);
 
-        if (config.getCleanupOutput()) {
+        if (config.cleanupOutput()) {
             log.finer("Cleaning up output directory");
             cleanDirectory(outputDirectory);
         }
         outputFiles = new ArrayList<>();
-        log.finer("Initiation of output files to " + config.getOutputPath());
-        this.initOutputFiles(config.getOutputPath());
+        log.finer("Initiation of output files to " + config.outputPath());
+        this.initOutputFiles(config.outputPath());
         log.finer("outputFiles (" + this.outputFiles.size() + "): " + outputFiles);
     }
 

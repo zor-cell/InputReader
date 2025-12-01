@@ -19,7 +19,7 @@ public class Main {
      * Do not change this method. Method Loads the config and initializes the IOManager.
      */
     public static void main(String[] args) {
-        Config config = ConfigLoader.loadConfig("resources/config.xml");
+        Config config = ConfigLoader.loadConfig("config.xml");
 
         CustomLogger.createLogger(config);
         log = CustomLogger.getLogger();

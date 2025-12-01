@@ -18,13 +18,13 @@ public class CustomLogger {
             }
         };
         handler.setFormatter(new MinimalFormatter());
-        handler.setLevel(config.getLogLevel());
+        handler.setLevel(config.logLevel());
 
         log = Logger.getLogger(CustomLogger.class.getName());
 
         log.setUseParentHandlers(false);
         log.addHandler(handler);
-        log.setLevel(config.getLogLevel());
+        log.setLevel(config.logLevel());
     }
 
     /**
