@@ -19,14 +19,31 @@ public class Main {
      * Do not change this method. Method Loads the config and initializes the IOManager.
      */
     public static void main(String[] args) {
-        Config config = ConfigLoader.loadConfig("config.xml");
+        try {
+            Config config = ConfigLoader.loadConfig("config.xml");
 
-        CustomLogger.createLogger(config);
-        log = CustomLogger.getLogger();
+            CustomLogger.createLogger(config);
+            log = CustomLogger.getLogger();
 
-        IOManager ioManager = new IOManager(config);
-        ioManager.initialize();
-        ioManager.execute();
+            IOManager ioManager = new IOManager(config);
+            ioManager.initialize();
+            ioManager.execute();
+        } catch (Exception e) {
+            log.severe(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public static void verify(Scanner input, Scanner output, VisualizerVerifier verifier) throws IOException {
+        int maxRuns = input.nextInt();
+        input.nextLine(); //skip linebreak
+
+        for(int run = 0;run < maxRuns;run++) {
+            String inputLine = input.nextLine();
+            String outputLine = output.nextLine();
+
+            verifier.checkValidity(run, inputLine, outputLine);
+        }
     }
 
 

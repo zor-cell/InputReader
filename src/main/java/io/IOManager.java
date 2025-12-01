@@ -3,6 +3,7 @@ package io;
 import config.Config;
 import log.CustomLogger;
 import solver.Main;
+import solver.VisualizerVerifier;
 
 import java.io.File;
 import java.io.IOException;
@@ -161,7 +162,7 @@ public class IOManager {
 
         inputFiles = new ArrayList<>();
         log.finer("Reading files from " + config.inputPath());
-        this.initInputFiles(config.outputPath());
+        this.initInputFiles(config.inputPath());
         log.finer("inputFiles (" + inputFiles.size() + "): " + inputFiles);
 
         if (config.cleanupOutput()) {
@@ -178,41 +179,54 @@ public class IOManager {
      * Executes the file processing operation.
      * Reads content from each input file, processes it, and writes the result to the corresponding output file.
      */
-    public void execute() {
+    public void execute() throws IOException {
         //execute main.Main.solve() for every input file
         log.info("Start execution");
+
+        var visualizerConfig = config.visualizerConfig();
+        VisualizerVerifier verifier = null;
+        if(visualizerConfig.enabled()) {
+            verifier = new VisualizerVerifier(visualizerConfig);
+        }
+
         for(int i = 0; i < inputFiles.size(); i++) {
             File inputFile = this.inputFiles.get(i);
             File outputFile = this.outputFiles.get(i);
             log.finer("File " + inputFile.getName() + " in progress!");
 
             //Create Scanner for reading from file and writer for writing to file
-            Scanner reader;
-            FileWriter writer;
-            try {
-                reader = new Scanner(inputFile);
-                writer = new FileWriter(outputFile);
-            } catch(Exception e) {
-                e.printStackTrace();
-                continue;
-            }
+            Scanner reader = new Scanner(inputFile);
+            FileWriter writer = new FileWriter(outputFile);
 
             //write to file in solve method
-            try {
-                Main.solve(reader, writer);
-            } catch (IOException e) {
-                e.printStackTrace();
-                continue;
-            }
+            Main.solve(reader, writer);
 
             //close used resources
             reader.close();
-            try {
-                writer.close();
-            } catch (Exception e) {
-                e.printStackTrace();
+            writer.close();
+
+            //if visualizer feature is enabled use it on files
+            if(visualizerConfig.enabled()) {
+                try {
+                    File verificationFile = new File(config.outputPath() + outputFile.getName() + "_verification.txt");
+                    var verificationWriter = new FileWriter(verificationFile);
+
+                    var inputScanner = new Scanner(inputFile);
+                    var outputScanner = new Scanner(outputFile);
+
+                    verifier.initWriter(verificationWriter);
+                    verifier.checkValidity(inputScanner, outputScanner);
+                    verificationWriter.close();
+                } catch(IOException e) {
+                    //empty
+                }
             }
         }
+
+        if(verifier != null) {
+            verifier.close();
+        }
+
         log.info("All Files done!");
     }
 }
