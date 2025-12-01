@@ -1,6 +1,5 @@
 package config;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -17,7 +16,7 @@ public record Config(
     List<String> allowedExtensions,
     Boolean cleanupOutput,
     Level logLevel,
-    VisualizerConfig visualizerConfig
+    VerificationConfig verificationConfig
 ) {
 
 }

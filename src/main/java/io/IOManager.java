@@ -2,8 +2,8 @@ package io;
 
 import config.Config;
 import log.CustomLogger;
-import solver.Main;
-import solver.VisualizerVerifier;
+import solver.Solver;
+import solver.SolutionVerifier;
 
 import java.io.File;
 import java.io.IOException;
@@ -178,15 +178,15 @@ public class IOManager {
     /**
      * Executes the file processing operation.
      * Reads content from each input file, processes it, and writes the result to the corresponding output file.
+     * If the verifier is enabled, it also verifies inputs and their corresponding outputs for correctness.
      */
-    public void execute() throws IOException {
-        //execute main.Main.solve() for every input file
+    public void execute() {
         log.info("Start execution");
 
-        var visualizerConfig = config.visualizerConfig();
-        VisualizerVerifier verifier = null;
+        var visualizerConfig = config.verificationConfig();
+        SolutionVerifier verifier = null;
         if(visualizerConfig.enabled()) {
-            verifier = new VisualizerVerifier(visualizerConfig);
+            verifier = new SolutionVerifier(visualizerConfig);
         }
 
         for(int i = 0; i < inputFiles.size(); i++) {
@@ -198,7 +198,7 @@ public class IOManager {
             try(Scanner reader = new Scanner(inputFile);
                 FileWriter writer = new FileWriter(outputFile)) {
 
-                Main.solve(reader, writer);
+                Solver.solve(reader, writer);
             } catch(IOException e) {
                 log.severe("Error during solving for file " + inputFile.getName() + ": " + e.getMessage());
                 continue;
@@ -218,7 +218,9 @@ public class IOManager {
         log.info("All Files done!");
     }
 
-    private void handleVerification(File inputFile, File outputFile, VisualizerVerifier verifier) {
+    private void handleVerification(File inputFile, File outputFile, SolutionVerifier verifier) {
+        log.finer("Verifying file " + inputFile.getName() + " in progress!");
+
         File file = createVerificationFile(outputFile);
 
         try (FileWriter writer = new FileWriter(file);

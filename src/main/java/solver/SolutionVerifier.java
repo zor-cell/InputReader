@@ -1,7 +1,6 @@
 package solver;
 
-import config.Config;
-import config.VisualizerConfig;
+import config.VerificationConfig;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -12,16 +11,15 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.Scanner;
 
-public class VisualizerVerifier {
-    private final VisualizerConfig config;
+public class SolutionVerifier {
+    private final VerificationConfig config;
     private final WebDriver driver;
     private FileWriter writer;
 
 
-    public VisualizerVerifier(VisualizerConfig config) {
+    public SolutionVerifier(VerificationConfig config) {
         this.config = config;
 
         WebDriverManager.chromedriver().setup();
@@ -35,7 +33,7 @@ public class VisualizerVerifier {
 
     public void checkValidity(Scanner input, Scanner output, FileWriter writer) throws IOException {
         this.writer = writer;
-        Main.verify(input, output, this);
+        Solver.verify(input, output, this);
     }
 
     public void checkValidity(int run, String inputContent, String outputContent) {

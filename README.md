@@ -12,9 +12,9 @@ Made by **[Philippe Zorman](https://github.com/zor-cell)**, **[Lutu](https://git
 ### Usage
 **src/io.IOManager.java:** This class takes over the required logic and error handling for inputs and outputs, it should not be changed.  
 
-**src/solver.Main.java:** This class serves as the interface for the user to implement their code.  
+**src/solver.Solver.java:** This class serves as the interface for the user to implement their code.  
 
-**void solver.Main.solve():** This method gets run for every file in the established inputPath. 
+**void solver.Solver.solve():** This method gets run for every file in the established inputPath. 
 A working program should contain the following aspects:
 - Read lines of input file with given java Scanner (see [Documentation](https://docs.oracle.com/javase/8/docs/api/java/util/Scanner.html))  
 - Compute result for input

@@ -12,26 +12,21 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
-public class Main {
+public class Solver {
     private static Logger log;
 
     /**
      * Do not change this method. Method Loads the config and initializes the IOManager.
      */
     public static void main(String[] args) {
-        try {
-            Config config = ConfigLoader.loadConfig("config.xml");
+        Config config = ConfigLoader.loadConfig("config.xml");
 
-            CustomLogger.createLogger(config);
-            log = CustomLogger.getLogger();
+        CustomLogger.createLogger(config);
+        log = CustomLogger.getLogger();
 
-            IOManager ioManager = new IOManager(config);
-            ioManager.initialize();
-            ioManager.execute();
-        } catch (Exception e) {
-            log.severe(e.getMessage());
-            e.printStackTrace();
-        }
+        IOManager ioManager = new IOManager(config);
+        ioManager.initialize();
+        ioManager.execute();
     }
 
     /**
@@ -39,7 +34,7 @@ public class Main {
      * This method is only applied if a visualizer is provided, which can verify correctness.
      * DO NOT CHANGE PARAMETERS OR RETURN TYPE
      */
-    public static void verify(Scanner input, Scanner output, VisualizerVerifier verifier) throws IOException {
+    public static void verify(Scanner input, Scanner output, SolutionVerifier verifier) throws IOException {
         int maxRuns = input.nextInt();
         input.nextLine(); //skip linebreak
 

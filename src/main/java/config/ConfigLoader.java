@@ -1,19 +1,15 @@
 package config;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
-import solver.Main;
+import solver.Solver;
 
 /**
  * The {@code config.ConfigLoader} class is responsible for loading and parsing
@@ -31,7 +27,7 @@ public class ConfigLoader {
      */
     public static Config loadConfig(String configName) {
         try {
-            InputStream configStream = Main.class.getClassLoader().getResourceAsStream(configName);
+            InputStream configStream = Solver.class.getClassLoader().getResourceAsStream(configName);
 
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
@@ -74,7 +70,7 @@ public class ConfigLoader {
                 }
             }
 
-            VisualizerConfig visualizerConfig = loadVisualizerConfig(root);
+            VerificationConfig verificationConfig = loadVisualizerConfig(root);
 
             return new Config(
                     inputPath,
@@ -83,7 +79,7 @@ public class ConfigLoader {
                     allowedExtensions,
                     cleanupOutput,
                     logLevel,
-                    visualizerConfig
+                    verificationConfig
             );
         } catch (Exception e) {
             e.printStackTrace();
@@ -92,7 +88,7 @@ public class ConfigLoader {
         return null;
     }
 
-    public static VisualizerConfig loadVisualizerConfig(Element root) {
+    public static VerificationConfig loadVisualizerConfig(Element root) {
         NodeList visualizerNodes = root.getElementsByTagName("visualizer");
         if (visualizerNodes.getLength() == 0) {
             return null;
@@ -134,7 +130,7 @@ public class ConfigLoader {
             throw new IllegalArgumentException("Visualizer is enabled but required element locators (input, output, status) are missing.");
         }
 
-        return new VisualizerConfig(
+        return new VerificationConfig(
                 enabled,
                 headless,
                 visualizerPath,
