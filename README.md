@@ -1,36 +1,63 @@
 # Java Input Reader
 
 ### Description
-This repository contains an input reader implemented in java that can read from files or
-folders (ie all files inside a folder). The solver purpose of this project is to take over
-tedious Input- and Output Management in Coding competitions. This repository can be used 
+This repository contains an input reader implemented in Java that can read from files or
+folders (ie all files inside a folder). The purpose of this project is to take over
+tedious input- and output management in coding competitions. This repository can be used 
 as a template to build your solution on.\
 This template was created specifically for the [CCC](https://codingcontest.org).
 
 Made by **[Philippe Zorman](https://github.com/zor-cell)**, **[Lutu](https://github.com/Lutu-gl)**
 
 ### Usage
-**src/io.IOManager.java:** This class takes over the required logic and error handling for inputs and outputs, it should not be changed.  
+The application provides an interface in `Solver.java` with two methods, which are both run for 
+every file in the configured `inputPath`:
 
-**src/solver.Solver.java:** This class serves as the interface for the user to implement their code.  
+- `solve()`: Computes the result of each testcase. A working program should contain
+    the following aspects:
+  - Read lines of an input file with a given Java Scanner (see [Documentation](https://docs.oracle.com/javase/8/docs/api/java/util/Scanner.html))
+  - Compute result for the input
+  - Write the result to an output file with a given Java FileWriter
+    
+    **Example:**
+    ```java
+    public static void solve(Scanner reader, FileWriter writer) throws IOException {
+        int maxRuns = reader.nextInt();
+        reader.nextLine();
+    
+        for(int run = 0;run < maxRuns;run++) {
+            //compute sum of each line
+            List<Integer> list = IOUtils.readList(reader, " ", Integer::parseInt);
+            int sum = list.stream().mapToInt(Integer::intValue).sum();
+    
+            writer.write(sum + "\n");
+        }
+    }
+    ```
 
-**void solver.Solver.solve():** This method gets run for every file in the established inputPath. 
-A working program should contain the following aspects:
-- Read lines of input file with given java Scanner (see [Documentation](https://docs.oracle.com/javase/8/docs/api/java/util/Scanner.html))  
-- Compute result for input
-- Write result to given java FileWriter (using ```writer.write(result + "\n");```);
+- `verify()`: Is run after `solve()` to verify the solution of your output specific to [CCC](https://codingcontest.org).
+For this to work a file `visualizer.html` has to be present, which can verify results for given inputs.
 
-**resources/config.xml:** In this file you can make configuration to the io.IOManager. There exist a few which are described here and in the file
+### Configuration
+The application can be configured by changing the `resources/config.xml` file accordingly.
+For configuration details, look inside the file.
 
-#### config.xml settings:
-**inputPath:** Specifies the directory path where the input files are located. For instance, ./input/ means that the application will look for input files in the input directory relative to the application's execution path. (recommended)
+### Getting Started
 
-**outputPath:** Defines the directory path where the output files should be placed after processing. For example, ./output/ places the output files in the output directory relative to where the application runs. (recommended)
+**Prerequisites**
+- [Java JDK 21 (or newer)](https://www.oracle.com/de/java/technologies/downloads/)
+- [Maven](https://maven.apache.org/download.cgi)
 
-**allowedExtensions:** This allows you to specify which file extensions should be processed by the application. Only files that match the extensions listed will be processed. For example, including .in and .txt means that only files ending with .in and .txt will be considered.
+**Run with IntelliJ (Recommended)**
 
-**targetSpecificLevel (Optional):** Specifies a target level. This is specific for CCC. The format '<number>e' indicates the number part and an 'e' (both optional). If 'e' is present only example files are considered. Number -1 represents all levels.
+This project is optimized for IntelliJ IDEA.
+1.  Open the project in IntelliJ.
+2.  Navigate to `src/main/java/solver/Solver.java`.
+3.  Click the green **Run** arrow (▶) next to the `main` method.
 
-**cleanupOutput (Optional):** A boolean value indicating whether the output directory should be cleaned up (i.e., existing files removed) before writing new output files.
+**Run with Maven (CLI)**
 
-**logLevel (Optional):** The log level indicating what information is logged. Valid values are: ALL, INFO, FINE, FINER, OFF
+Alternatively, you can run the solution directly from your terminal:
+```bash
+mvn clean compile exec:java -Dexec.mainClass="solver.Solver"
+```
