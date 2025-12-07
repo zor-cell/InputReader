@@ -34,35 +34,41 @@ public class ConfigLoader {
             Document doc = db.parse(configStream);
             Element root = doc.getDocumentElement();
 
-            String inputPath = getTagContentFromParent(root, "inputPath");
+            NodeList solverNodes = root.getElementsByTagName("solver");
+            if (solverNodes.getLength() == 0) {
+                throw new IllegalArgumentException("Solver is null");
+            }
+            Element solverElement = (Element) solverNodes.item(0);
+
+            String inputPath = getTagContentFromParent(solverElement, "inputPath");
             if(inputPath == null) {
                 throw new IllegalArgumentException("Input path is null");
             }
 
-            String outputPath = getTagContentFromParent(root, "outputPath");
+            String outputPath = getTagContentFromParent(solverElement, "outputPath");
             if(outputPath == null) {
                 throw new IllegalArgumentException("Output path is null");
             }
 
-            String targetSpecificLevel = getTagContentFromParent(root, "targetSpecificLevel");
+            String targetSpecificLevel = getTagContentFromParent(solverElement, "targetSpecificLevel");
             if(targetSpecificLevel == null) {
                 targetSpecificLevel = "-1";
             }
 
             boolean cleanupOutput = true;
-            String cleanupOutputStr = getTagContentFromParent(root, "cleanupOutput");
+            String cleanupOutputStr = getTagContentFromParent(solverElement, "cleanupOutput");
             if (cleanupOutputStr != null) {
                 cleanupOutput = Boolean.parseBoolean(cleanupOutputStr);
             }
 
             Level logLevel = Level.INFO;
-            String logLevelStr = getTagContentFromParent(root, "logLevel");
+            String logLevelStr = getTagContentFromParent(solverElement, "logLevel");
             if (logLevelStr != null) {
                 logLevel = Level.parse(logLevelStr.toUpperCase());
             }
 
             List<String> allowedExtensions = new ArrayList<>();
-            NodeList allowedExtensionsList = root.getElementsByTagName("allowedExtensions");
+            NodeList allowedExtensionsList = solverElement.getElementsByTagName("allowedExtensions");
             if (allowedExtensionsList.getLength() > 0) {
                 NodeList extensionNodes = ((Element) allowedExtensionsList.item(0)).getElementsByTagName("extension");
                 for (int i = 0; i < extensionNodes.getLength(); i++) {
@@ -70,7 +76,7 @@ public class ConfigLoader {
                 }
             }
 
-            VerificationConfig verificationConfig = loadVisualizerConfig(root);
+            VerifierConfig verifierConfig = loadVisualizerConfig(root);
 
             return new Config(
                     inputPath,
@@ -79,7 +85,7 @@ public class ConfigLoader {
                     allowedExtensions,
                     cleanupOutput,
                     logLevel,
-                    verificationConfig
+                    verifierConfig
             );
         } catch (Exception e) {
             e.printStackTrace();
@@ -88,32 +94,32 @@ public class ConfigLoader {
         return null;
     }
 
-    public static VerificationConfig loadVisualizerConfig(Element root) {
-        NodeList visualizerNodes = root.getElementsByTagName("visualizer");
-        if (visualizerNodes.getLength() == 0) {
-            return null;
+    public static VerifierConfig loadVisualizerConfig(Element root) {
+        NodeList verifierNodes = root.getElementsByTagName("verifier");
+        if (verifierNodes.getLength() == 0) {
+            throw new IllegalArgumentException("Verifier is null");
         }
 
-        Element visualizerElement = (Element) visualizerNodes.item(0);
+        Element verifierElement = (Element) verifierNodes.item(0);
 
         boolean enabled = false;
-        String enabledStr = getTagContentFromParent(visualizerElement, "enabled");
+        String enabledStr = getTagContentFromParent(verifierElement, "enabled");
         if (enabledStr != null) {
             enabled = Boolean.parseBoolean(enabledStr);
         }
 
         boolean headless = true;
-        String headlessStr = getTagContentFromParent(visualizerElement, "headless");
+        String headlessStr = getTagContentFromParent(verifierElement, "headless");
         if (headlessStr != null) {
             headless = Boolean.parseBoolean(headlessStr);
         }
 
-        String visualizerPath = getTagContentFromParent(visualizerElement, "visualizerPath");
+        String visualizerPath = getTagContentFromParent(verifierElement, "visualizerPath");
         if (enabled && visualizerPath == null) {
             throw new IllegalArgumentException("Visualizer is enabled but 'visualizerPath' is missing.");
         }
 
-        NodeList elementLocatorsNodes = visualizerElement.getElementsByTagName("elementLocators");
+        NodeList elementLocatorsNodes = verifierElement.getElementsByTagName("elementLocators");
         if(elementLocatorsNodes.getLength() == 0) {
             return null;
         }
@@ -130,7 +136,7 @@ public class ConfigLoader {
             throw new IllegalArgumentException("Visualizer is enabled but required element locators (input, output, status) are missing.");
         }
 
-        return new VerificationConfig(
+        return new VerifierConfig(
                 enabled,
                 headless,
                 visualizerPath,

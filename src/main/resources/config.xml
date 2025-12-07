@@ -1,24 +1,51 @@
 <configuration>
-    <inputPath>./input/</inputPath>                 <!-- Specifies the directory path where input files are located. -->
-    <outputPath>./output/</outputPath>              <!-- Specifies the directory path where output files should be placed. -->
-    <allowedExtensions>                             <!-- Defines a list of file extensions that are allowed to be processed. -->
-        <extension>.in</extension>
-        <extension>.txt</extension>
-    </allowedExtensions>
+    <!-- Solver configuration -->
+    <solver>
+        <!-- Specifies the directory path where input files are located -->
+        <inputPath>./input/</inputPath>
 
-    <targetSpecificLevel>99</targetSpecificLevel>  <!-- (Optional) Specifies a target level. This is specific for CCC (level<number>.in files). The format '<number>e' indicates the number part and an 'e' (both optional). If 'e' is present only example files are considered. Number -1 represents all levels.-->
-    <cleanupOutput>true</cleanupOutput>             <!-- (Optional) A boolean value indicating whether the output directory should be cleaned up (i.e., existing files removed) before writing new output files. -->
-    <logLevel>INFO</logLevel> <!--(Optional) The log level indicating what information is logged. Valid values are: ALL, INFO, FINE, FINER, OFF-->
+        <!-- Specifies the directory path where output files should be placed -->
+        <outputPath>./output/</outputPath>
 
-    <visualizer>
+        <!-- Defines a list of file extensions that are allowed to be processed -->
+        <allowedExtensions>
+            <extension>.in</extension>
+            <extension>.txt</extension>
+        </allowedExtensions>
+
+        <!-- (Optional) Specifies a target level. This is specific for CCC (level<number>.in files). The format '<number>e' indicates the number part and an 'e' (both optional). If 'e' is present only example files are considered. Number -1 represents all levels -->
+        <targetSpecificLevel>99</targetSpecificLevel>
+
+        <!-- (Optional) A boolean value indicating whether the output directory should be cleaned up (i.e., existing files removed) before writing new output files -->
+        <cleanupOutput>true</cleanupOutput>
+
+        <!-- (Optional) The log level indicating what information is logged. Valid values are: ALL, INFO, FINE, FINER, OFF -->
+        <logLevel>INFO</logLevel>
+    </solver>
+
+    <!-- Verifier configuration -->
+    <verifier>
+        <!-- A boolean value indicating whether the verifier should be used -->
         <enabled>false</enabled>
+
+        <!-- A boolean value indicating whether the running verifier is headless-->
         <headless>true</headless>
+
+        <!-- Specifies the input path of the visualizer file -->
         <visualizerPath>./input/visualizer.html</visualizerPath>
+
         <elementLocators>
+            <!-- The HTML input locator of the visualizer  -->
             <inputLocator>#levelInput</inputLocator>
+
+            <!-- The HTML output locator of the visualizer  -->
             <outputLocator>#levelSolution</outputLocator>
+
+            <!-- The HTML status locator of the visualizer  -->
             <statusLocator>#spanStatus</statusLocator>
+
+            <!-- (Optional) The HTML locator of the visualizer for additional information  -->
             <infoLocator>#spanStatusMessage</infoLocator>
         </elementLocators>
-    </visualizer>
+    </verifier>
 </configuration>

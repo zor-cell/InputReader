@@ -1,6 +1,6 @@
 package config;
 
-public record VerificationConfig(
+public record VerifierConfig(
         boolean enabled,
         boolean headless,
         String visualizerPath,

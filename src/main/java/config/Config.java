@@ -16,7 +16,7 @@ public record Config(
     List<String> allowedExtensions,
     Boolean cleanupOutput,
     Level logLevel,
-    VerificationConfig verificationConfig
+    VerifierConfig verifierConfig
 ) {
 
 }

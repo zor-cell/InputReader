@@ -183,10 +183,10 @@ public class IOManager {
     public void execute() {
         log.info("Start execution");
 
-        var visualizerConfig = config.verificationConfig();
+        var verifierConfig = config.verifierConfig();
         SolutionVerifier verifier = null;
-        if(visualizerConfig.enabled()) {
-            verifier = new SolutionVerifier(visualizerConfig);
+        if(verifierConfig.enabled()) {
+            verifier = new SolutionVerifier(verifierConfig);
         }
 
         for(int i = 0; i < inputFiles.size(); i++) {

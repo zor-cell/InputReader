@@ -1,6 +1,6 @@
 package solver;
 
-import config.VerificationConfig;
+import config.VerifierConfig;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import log.CustomLogger;
 import org.openqa.selenium.By;
@@ -18,12 +18,12 @@ import java.util.logging.Logger;
 public class SolutionVerifier {
     private static final Logger log = CustomLogger.getLogger();
 
-    private final VerificationConfig config;
+    private final VerifierConfig config;
     private final WebDriver driver;
     private FileWriter writer;
 
 
-    public SolutionVerifier(VerificationConfig config) {
+    public SolutionVerifier(VerifierConfig config) {
         this.config = config;
 
         WebDriverManager.chromedriver().setup();
