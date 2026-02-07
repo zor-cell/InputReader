@@ -18,10 +18,11 @@ every file in the configured `inputPath`:
   - Read lines of an input file with a given Java Scanner (see [Documentation](https://docs.oracle.com/javase/8/docs/api/java/util/Scanner.html))
   - Compute result for the input
   - Write the result to an output file with a given Java FileWriter
-    
-    **Example:**
-    ```java
-    public static void solve(Scanner reader, FileWriter writer) throws IOException {
+
+  **Example:**
+  ```java
+  //Outputs the sum of the space-separated integers
+  public static void solve(Scanner reader, FileWriter writer) throws IOException {
         int maxRuns = reader.nextInt();
         reader.nextLine();
     
@@ -32,11 +33,31 @@ every file in the configured `inputPath`:
     
             writer.write(sum + "\n");
         }
-    }
-    ```
+  }
+  ```
 
 - `verify()`: Is run after `solve()` to verify the solution of your output specific to [CCC](https://codingcontest.org).
-For this to work a file `visualizer.html` has to be present, which can verify results for given inputs.
+  For this to work a file `visualizer.html` has to be present, which can verify results for given inputs.
+  A working program should contain the following:
+  - Read lines of the input file that are used for one testcase
+  - Read lines of the output file that are used for one testcase
+  - Check validity with the given verifier
+
+  **Example:**
+  ```java
+    //Verifies a testcase with one input line and one output line
+   public static void verify(Scanner input, Scanner output, SolutionVerifier verifier) throws IOException {
+        int maxRuns = input.nextInt();
+        input.nextLine();
+
+        for(int run = 0;run < maxRuns;run++) {
+            String inputLine = input.nextLine();
+            String outputLine = output.nextLine();
+
+            verifier.checkValidity(run, inputLine, outputLine);
+       }
+  }
+  ```
 
 ### Configuration
 The application can be configured by changing the `resources/config.xml` file accordingly.
